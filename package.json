@@ -4,11 +4,11 @@
   "description": "simple \"api\" (if it's the right term) to get easily the rank/result from https://www.ffvbbeach.org",
   "main": "dist/app.js",
   "scripts": {
+    "postinstall": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc && npm run start",
     "start": "node dist/index.js",
     "delete": "rmdir dist /s /q",
-    "postinstall": "tsc",
     "deploy": "git add . && git commit -m Heroku && git push heroku master"
   },
   "author": "Theo Denoyelle",
