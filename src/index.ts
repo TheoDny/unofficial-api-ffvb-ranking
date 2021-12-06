@@ -1,6 +1,5 @@
-import express from 'express';
-import jsdom from 'jsdom';
-
+const express = require("express")
+const jsdom = require("jsdom")
 const { JSDOM } = jsdom;
 
 const app = express();
