@@ -22,4 +22,4 @@ GET ->
 "https://get-ffvb-ranking-days.herokuapp.com/?saison=" + saison + "&codent=" + codent + "&poule=" + poule
 `
 
-*remarque: mon hébregement sur herokuapp est freemium donc si vous l'utilisé faites en sorte de ne pas spammer de requêtes et si je ne sais pouquoi trop de personnes l'utilisent n'hésiter pas à déployer le vôtre*
+*remarque: mon hébergement sur herokuapp est freemium donc si vous l'utilisez faites en sorte de ne pas spammer de requêtes et si je ne sais pourquoi trop de personnes l'utilisent, n'hésitez pas à déployer le vôtre*
