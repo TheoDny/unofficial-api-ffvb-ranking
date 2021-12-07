@@ -16,10 +16,11 @@ renvoie les 2 `<table>` au format :
 - saison = "XXXX/XXXX"
 - codent = "...XX"
 - poule = "XXX"
-
+- style = dark-softBlue (optionnel) 
+  
 GET ->
  `
-"https://get-ffvb-ranking-days.herokuapp.com/?saison=" + saison + "&codent=" + codent + "&poule=" + poule
+"https://get-ffvb-ranking-days.herokuapp.com/?saison=" + saison + "&codent=" + codent + "&poule=" + poule + "&style=" + style
 `
 
 *remarque: mon hébergement sur herokuapp est freemium donc si vous l'utilisez faites en sorte de ne pas spammer de requêtes et si je ne sais pourquoi trop de personnes l'utilisent, n'hésitez pas à déployer le vôtre*
