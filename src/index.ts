@@ -26,6 +26,10 @@ app.get('/', (req, res ) => {
     .then( (tables : HTMLCollectionOf<HTMLTableElement> ) => {
       res.send(tables[0].outerHTML + tables[1].outerHTML )
     })
+    .catch( (err) => {
+      res.send(err)
+      console.error(err)
+    })
   }
 });
 
@@ -47,6 +51,16 @@ function sendHTMLtables(url: string) {
   jsdom.JSDOM.fromURL(url, options) 
     .then(dom => {
       let tables = dom.window.document.querySelectorAll("table")
+      if (tables[2] == null || tables[3] == null) {
+        reject(
+          {
+            'error': {
+              'code': 500,
+              'message': 'Wrongs arguments in the request, be sure it contain the right arguments: saison , codent , poule'
+              }
+            }
+        )
+    }
       resolve( [ tables[2], tables[3] ] ) // [ ranking, days ]
     })
     .catch((error => {
@@ -54,7 +68,7 @@ function sendHTMLtables(url: string) {
       reject({
         'error': {
           'code': 0,
-          'message': 'rejected'
+          'message': 'rejected from ' + url
           }
         })
     }))
