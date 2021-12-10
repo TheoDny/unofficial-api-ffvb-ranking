@@ -12,6 +12,7 @@ app.all("/", function(req, res, next) {
 });
 
 app.get('/', (req, res ) => {
+  // check if the necessary argument are given 
   if (req.query.saison == undefined || req.query.codent == undefined || req.query.poule == undefined) {
     res.send(
     {
@@ -24,10 +25,7 @@ app.get('/', (req, res ) => {
     const url = getFFVBurl(req.query)
     extractHTMLtables(url)
     .then( (div : HTMLDivElement) => {
-      let style : string
-      
       let tables : [HTMLTableElement,HTMLTableElement] = giveStyle(req.query.style,div)
-
       res.send(tables[0].outerHTML + tables[1].outerHTML )
     })
     .catch( (err) => {
@@ -36,27 +34,37 @@ app.get('/', (req, res ) => {
     })
   }
 });
-
-function getFFVBurl(query) {
+/**
+ * construct and return the url www.ffvbbeach.org location to extract the \<html\> with ranking and days
+ * 
+ * @param query 
+ * @returns url www.ffvbbeach.org location to extract the \<html\>
+ */
+function getFFVBurl(query: {saison : string, poule: string, codent: string} ) : string{
   return "https://www.ffvbbeach.org/ffvbapp/resu/vbspo_calendrier.php?saison=" + query.saison + "&codent=" + query.codent + "&poule=" + query.poule
 }
 
+/**
+ * Promise that get the \<html\> of "url" and extract the \<table\>
+ * 
+ * @param url www.ffvbbeach.org location to extract the \<html\>
+ * @returns Promise that resolve a \<div\> with 2 \<table\> as children (ranking and days)
+ * else reject an error (json format)
+ */
 function extractHTMLtables(url: string) : Promise<HTMLDivElement> {
   return new Promise( (resolve,reject) => {
 
     var resourceLoader = new jsdom.ResourceLoader({
       strictSSL: false,
-  });
+    });
 
-  var options = { 
+    var options = { 
       resources: resourceLoader,
-  };
+    };
 
-  jsdom.JSDOM.fromURL(url, options) 
+    jsdom.JSDOM.fromURL(url, options) 
     .then(dom => {
       let tables = dom.window.document.querySelectorAll("table")
-      let div = dom.window.document.createElement("div")
-      div.innerHTML = tables[2].outerHTML + tables[3].outerHTML
       if (tables[2] == null || tables[3] == null) {
         reject(
           {
@@ -66,8 +74,11 @@ function extractHTMLtables(url: string) : Promise<HTMLDivElement> {
               }
             }
         )
-    }
-      resolve( div ) // div [ ranking, days ]
+      } else {
+        let div = dom.window.document.createElement("div")
+        div.innerHTML = tables[2].outerHTML + tables[3].outerHTML
+        resolve( div ) // div [ ranking, days ]
+      }
     })
     .catch((error => {
       console.error(error)
@@ -80,12 +91,18 @@ function extractHTMLtables(url: string) : Promise<HTMLDivElement> {
     }))
   })
 }
-
+/**
+ * Set a style of the \<table\> according to "style"
+ *
+ * @param style the style to set
+ * @param div the \<div\> containing 2 \<table\> as children (ranking and days)
+ * @returns array[\<table\> ranking ,\<table\> days]
+ */
 function giveStyle(style : string, div : HTMLDivElement) : [HTMLTableElement,HTMLTableElement]{
   let ret : HTMLCollectionOf<HTMLTableElement> = div.getElementsByTagName("table")
   if (style == "dark-softBlue") {
 
-    /// tr style ///
+    /// tr style /// 
     let trAll = div.querySelectorAll("tr")
     for (let i = 0; i < trAll.length; i++) {
       if (i%2) {
@@ -114,10 +131,6 @@ function giveStyle(style : string, div : HTMLDivElement) : [HTMLTableElement,HTM
       }
     })
   
-
-
-    
-
     ret[1].querySelectorAll("tr:nth-child(6n+1)")
     .forEach( (e : HTMLElement) => {
       e.style.backgroundColor ="rgb(64,92,223)"
